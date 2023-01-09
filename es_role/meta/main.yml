@@ -1,0 +1,19 @@
+--- 
+galaxy_info:
+    author: SunilKumar
+    company: opstree
+    description: Install Elasticsearch
+
+    min_ansible_version: 2.7
+
+    platforms:
+        - name: Debian
+        - name: Redhat
+          
+    Tool:
+        - name: Elasticsearch
+              - "5 (all)"
+              - "6 (all)"
+              - "7 (all)"
+              - "8 (all)"
+# dependencies: '"openjdkversion" "1.8.0_242"'

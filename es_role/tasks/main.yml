@@ -1,0 +1,25 @@
+---
+# tasks file for es_role
+- name: Include debianes intallation file
+  include_tasks: debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Include redhat intallation file
+  include_tasks: redhat.yml
+  when: ansible_os_family == "RedHat"
+
+- name: change config for master
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    line: "node.master: true"
+  when: 
+     - "'esm' in group_names"
+     - major_version < "8"
+
+- name: Insert/Update "security" configuration for version >= 8
+  blockinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    block: |
+      xpack.security.transport.ssl.enabled: false
+      xpack.security.enabled: false
+  when: major_version >= "8"

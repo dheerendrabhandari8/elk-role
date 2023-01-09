@@ -1,0 +1,31 @@
+---
+# defaults file for es_role
+
+### Static value ####
+es: "elasticsearch"
+### Static value end #####
+
+private_key_file: /home/sunil/Downloads/Elastic.pem
+
+redhat_GPG_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+debian_PGP_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+path_for_data: /var/lib/elasticsearch
+path_for_logs: /var/log/elasticsearch
+
+es_IP: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+discovery_nodes: >-
+  ["{{ groups['all']
+  | map('extract', hostvars, ['ansible_default_ipv4', 'address'])
+  | join('", "') }}"]
+
+zen_host: >-
+  ["{{ groups['all']
+  | map('extract', hostvars, ['ansible_default_ipv4', 'address'])
+  | join('", "') }}"]
+
+
+
+

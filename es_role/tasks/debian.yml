@@ -1,0 +1,51 @@
+---
+  - name: Update repositories cache and install "java" package
+    apt:
+      name: openjdk-8-jdk
+      update_cache: yes
+    when: major_version <= "6"
+
+  - name: Import PGP keys
+    apt_key: 
+      url: "{{ debian_PGP_key }}"
+      keyring: /usr/share/keyrings/elasticsearch-keyring.gpg
+
+  - name: Install apt-transport-https package
+    apt:
+      name: apt-transport-https
+      state: present
+      update_cache: yes
+
+  - name: Insert line at end
+    lineinfile:
+      path: /etc/apt/sources.list.d/elastic-{{ major_version }}.x.list
+      line: deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/{{ major_version }}.x/apt stable main
+      create: yes
+
+  - name: Installing specific package of Elasticsearch from debian package
+    apt: 
+      name: elasticsearch={{ minor_version }}
+      state: present
+        #      allow_downgrade: yes
+      update_cache: yes
+  
+  - name: Copying elasticsearch.yml file
+    template: 
+      src: elasticsearch.yml.j2
+      dest: /etc/elasticsearch/elasticsearch.yml
+    when: major_version >= "7"
+    
+    notify:
+      - daemon_reload
+      - Start_elasticsearch 
+
+  - name: Copying elasticsearch6.yml file
+    template: 
+      src: elasticsearch6.yml.j2
+      dest: /etc/elasticsearch/elasticsearch.yml
+    when: major_version < "7"
+        
+    notify:
+      - daemon_reload
+      - Start_elasticsearch      
+

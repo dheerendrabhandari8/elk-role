@@ -1,0 +1,12 @@
+---
+# handlers file for es_role
+  - name: daemon_reload
+    systemd:
+      daemon_reload: yes
+      
+  - name: Start_elasticsearch
+    service:
+      name: elasticsearch
+      state: started
+
+

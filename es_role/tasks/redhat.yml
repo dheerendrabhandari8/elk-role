@@ -1,0 +1,44 @@
+---
+- name: Installing JDk
+  yum: 
+    name: java-1.8.0-openjdk
+    update_cache: yes
+  when: major_version <= "6"
+  
+- name: Import a key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ redhat_GPG_key }}"
+
+- name: Copying elastic.repo file
+  template: 
+    src: elasticsearch_repo.j2
+    dest: /etc/yum.repos.d/elasticsearch.repo
+    
+- name: Install the specific version of elasticsearch from the elasticsearch repo
+  ansible.builtin.yum:
+    name: elasticsearch-{{ minor_version }}
+    enablerepo: elasticsearch
+    state: present
+    allow_downgrade: yes
+    update_cache: yes
+
+- name: Copying elasticsearch.yml file
+  template: 
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  when: major_version >= "7"
+    
+  notify:
+    - daemon_reload
+    - Start_elasticsearch 
+
+- name: Copying elasticsearch6.yml file
+  template: 
+    src: elasticsearch6.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  when: major_version < "7"
+
+  notify:
+     - daemon_reload
+     - Start_elasticsearch
