@@ -1,12 +1,13 @@
 ---
+
 #elasticsearch.yml file variables
 
 cluster_name: "es_cluster"
 
 # Enter your required version
 
-major_version: "8"
-minor_version: "8.4.0"
+major_version: "7"
+minor_version: "7.17.8"
 
 #elasticsearch Port
 
