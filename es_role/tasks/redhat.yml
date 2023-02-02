@@ -1,7 +1,7 @@
 ---
 - name: Installing JDk
   yum: 
-    name: java-1.8.0-openjdk
+    name: openjdk-8-jdk
     update_cache: yes
   when: major_version <= "6"
   
